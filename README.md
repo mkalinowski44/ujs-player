@@ -92,3 +92,4 @@ Available values:
 | volumeDown()          | Set volume by 10% down                                                                  |
 | getStatus()           | Returns status object                                                                   |
 | on(String, Function)  | Set callback function to player events                                                  |
+| mute()                | On/Off sound                                                                            |

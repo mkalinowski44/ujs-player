@@ -110,6 +110,7 @@ class ujsPlayer {
       this.bufferingDetected = false
       window.requestAnimationFrame(this.checkBuffering.bind(this))
 
+      this.updateRewindTexts()
       this.addEvents()
       this.setVolume()
    }
@@ -134,43 +135,43 @@ class ujsPlayer {
             <div class="desktop">
                <table>
                   <tr>
-                     <td><span>Click</span></td>
+                     <td><span class="negative">Click</span></td>
                      <td>Pause / Play</td>
                   </tr>
                   <tr>
-                     <td><span>Space</span></td>
+                     <td><span class="negative">Space</span></td>
                      <td>Pause / Play</td>
                   </tr>
                   <tr>
-                     <td><span>Arrow left</span></td>
-                     <td>Backwards 30s</td>
+                     <td><span class="negative">Arrow left</span></td>
+                     <td>Backwards <span data-rewind-time></span>s</td>
                   </tr>
                   <tr>
-                     <td><span>Arrow right</span></td>
-                     <td>Forwards 30s</td>
+                     <td><span class="negative">Arrow right</span></td>
+                     <td>Forwards <span data-rewind-time></span>s</td>
                   </tr>
                   <tr>
-                     <td><span>Arrow up</span></td>
+                     <td><span class="negative">Arrow up</span></td>
                      <td>Volume up</td>
                   </tr>
                   <tr>
-                     <td><span>Arrow down</span></td>
+                     <td><span class="negative">Arrow down</span></td>
                      <td>Volume down</td>
                   </tr>
                   <tr>
-                     <td><span>Scroll</span></td>
+                     <td><span class="negative">Scroll</span></td>
                      <td>Set volume</td>
                   </tr>
                   <tr>
-                     <td><span>M</span></td>
+                     <td><span class="negative">M</span></td>
                      <td>Mute</td>
                   </tr>
                   <tr>
-                     <td><span>F</span></td>
+                     <td><span class="negative">F</span></td>
                      <td>Fullscreen</td>
                   </tr>
                   <tr>
-                     <td><span>Double Click</span></td>
+                     <td><span class="negative">Double Click</span></td>
                      <td>Fullscreen</td>
                   </tr>
                </table>
@@ -178,23 +179,23 @@ class ujsPlayer {
             <div class="mobile">
                <table>
                   <tr>
-                     <td><span>Tap</span></td>
+                     <td><span class="negative">Tap</span></td>
                      <td>Show Controls > Pause / Play</td>
                   </tr>
                   <tr>
-                     <td><span>Swipe left</span></td>
-                     <td>Backwards 30s</td>
+                     <td><span class="negative">Swipe left</span></td>
+                     <td>Backwards <span data-rewind-time></span>s</td>
                   </tr>
                   <tr>
-                     <td><span>Swipe right</span></td>
-                     <td>Forwards 30s</td>
+                     <td><span class="negative">Swipe right</span></td>
+                     <td>Forwards <span data-rewind-time></span>s</td>
                   </tr>
                   <tr>
-                     <td><span>Swipe up / down</span></td>
+                     <td><span class="negative">Swipe up / down</span></td>
                      <td>Set volume</td>
                   </tr>
                   <tr>
-                     <td><span>Double Tap</span></td>
+                     <td><span class="negative">Double Tap</span></td>
                      <td>Fullscreen</td>
                   </tr>
                </table>
@@ -388,6 +389,13 @@ class ujsPlayer {
             this.playPause()
          }
       }
+   }
+
+   updateRewindTexts() {
+      let elements = document.querySelectorAll(this.playerStr + " span[data-rewind-time]")
+      elements.forEach(element => {
+         element.innerHTML = this.rewindTime
+      })
    }
 
    showHelp(e) {
@@ -669,6 +677,7 @@ class ujsPlayer {
    setRewindTime(time) {
       if(time === 5 || time === 10 || time === 30) {
          this.rewindTime = time
+         this.updateRewindTexts()
       } else {
          console.warn('Posible rewind times: 5; 10; 30')
       }
