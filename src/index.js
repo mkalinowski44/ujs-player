@@ -66,7 +66,7 @@ class ujsPlayer {
          setSpeed: null,
          load: null,
          fullscreen: null,
-         fullscreenout: null
+         fullscreenOut: null
       }
 
       this.speedList = [0.25, 0.5, 1, 1.5, 2]
@@ -100,6 +100,7 @@ class ujsPlayer {
       this.disableHover = false
       this.disableVideoTimeUpdate = false
       this.isTimelineChanging = false
+      this.isHelpShow = false
 
       // this.checkInterval = 50.0
       this.lastPlayPos = 0
@@ -108,9 +109,9 @@ class ujsPlayer {
       this.currentPlayTime = 0
       this.bufferingDetected = false
       window.requestAnimationFrame(this.checkBuffering.bind(this))
-      
+
       this.addEvents()
-      this.updateVolume()
+      this.setVolume()
    }
 
    createPlayer() {
@@ -356,7 +357,7 @@ class ujsPlayer {
             let newVolume =this.status.volume + velocity
             if(newVolume > 100) newVolume = 100
             if(newVolume < 0) newVolume = 0
-            this.updateVolume(newVolume)
+            this.setVolume(newVolume)
             this.showInfo('volume')
          }
       }
@@ -367,7 +368,7 @@ class ujsPlayer {
          if(e.deltaX > 0 ) {
             this.timeForward()
          } else {
-            this.timeReplay()
+            this.timeBackwards()
          }
       }
    }
@@ -399,6 +400,7 @@ class ujsPlayer {
          }, 100)
          this.elements.helpContent.setAttribute('data-content', 'mobile')
       }
+      this.isHelpShow = true
    }
 
    setThemeColor(color) {
@@ -464,6 +466,7 @@ class ujsPlayer {
 
    hideHelp() {
       this.elements.help.classList.remove('show')
+      this.isHelpShow = false
    }
 
    speedClick(e) {
@@ -692,7 +695,7 @@ class ujsPlayer {
          case 'Space': this.playPause(); break
          case 'ArrowUp': this.volumeUp(); this.showInfo('volume'); break
          case 'ArrowDown': this.volumeDown(); this.showInfo('volume'); break
-         case 'ArrowLeft': this.timeReplay(); break
+         case 'ArrowLeft': this.timeBackwards(); break
          case 'ArrowRight': this.timeForward(); break
          case 'KeyF': this.fullscreen(); break
          case 'KeyM': this.mute(); this.showInfo('volume'); break
@@ -702,14 +705,18 @@ class ujsPlayer {
    volumeUp() {
       let volume = this.status.volume + 10
       if(volume > 100) volume = 100
-      this.updateVolume(volume)
+      this.setVolume(volume)
       this.showInfo('volume')
    }
    volumeDown() {
       let volume = this.status.volume - 10
       if(volume < 0) volume = 0
-      this.updateVolume(volume)
+      this.setVolume(volume)
       this.showInfo('volume')
+   }
+
+   getStatus() {
+      return this.status
    }
 
    videoOnLoad() {
@@ -733,7 +740,7 @@ class ujsPlayer {
       this.volumeChanging = true;
       this.elements.volumeConterContainer.classList.add('active')
 
-      this.updateVolume(this.getVolumeFromEvent(e))
+      this.setVolume(this.getVolumeFromEvent(e))
    }
 
    timelineMouseMove(e) {
@@ -753,7 +760,7 @@ class ujsPlayer {
 
    mouseMove(e) {
       if(this.volumeChanging) {
-         this.updateVolume(this.getVolumeFromEvent(e))
+         this.setVolume(this.getVolumeFromEvent(e))
       }
 
       if(this.showTimeThumb) {
@@ -772,7 +779,7 @@ class ujsPlayer {
    }
 
    hideControls() {
-      if(this.controlsIsHover === false && this.showSettings === false) {
+      if(this.controlsIsHover === false && this.showSettings === false && !this.isHelpShow) {
          this.elements.controls.classList.remove('show')
          this.elements.title.classList.remove('show')
          this.playerEl.classList.remove('show-cursor')
@@ -821,7 +828,7 @@ class ujsPlayer {
       return time
    }
 
-   updateVolume(value) {
+   setVolume(value) {
       if(value !== undefined) {
          if(value === 0 && this.status.volume !== 0) {
             this.status.lastVolume = this.status.volume
@@ -902,7 +909,7 @@ class ujsPlayer {
       }
    }
 
-   timeReplay() {
+   timeBackwards() {
       let time = this.status.time.time
       time -= this.rewindTime;
       if(time < 0) time = 0
@@ -916,9 +923,9 @@ class ujsPlayer {
 
    mute() {
       if(this.status.volume === 0) {
-         this.updateVolume(this.status.lastVolume)
+         this.setVolume(this.status.lastVolume)
       } else {
-         this.updateVolume(0)
+         this.setVolume(0)
       }
    }
 
