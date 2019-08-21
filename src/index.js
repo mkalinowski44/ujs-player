@@ -101,6 +101,7 @@ class ujsPlayer {
       this.disableVideoTimeUpdate = false
       this.isTimelineChanging = false
       this.isHelpShow = false
+      this.showInfoTimeout = null
 
       // this.checkInterval = 50.0
       this.lastPlayPos = 0
@@ -208,11 +209,12 @@ class ujsPlayer {
          <div class="circle2" data-color="border-left"></div>
       </div>
 
+      <div class="info"></div>
+
       <div class="big-play">
          <i class="material-icons">play_arrow</i>
       </div>
 
-      <div class="info"></div>
 
       <div class="controls">
          <div class="background"></div>
@@ -671,6 +673,12 @@ class ujsPlayer {
             break;
          }
       }
+      this.elements.info.classList.add('show')
+
+      clearTimeout(this.showInfoTimeout)
+      this.showInfoTimeout = setTimeout(() => {
+         this.elements.info.classList.remove('show')
+      }, 500)
 
    }
 
